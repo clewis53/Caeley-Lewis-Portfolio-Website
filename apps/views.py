@@ -1,21 +1,13 @@
-from app.models import LoginForm, Project, ProjectForm, User
-from database.database import db
+from apps.models import LoginForm, Project, ProjectForm, User
+from dependencies.database import db
+from dependencies.login_manager import login_manager
+from dependencies.ckeditor import ckeditor
 from flask import Blueprint, redirect, request, url_for, render_template, flash
-from flask_bootstrap import Bootstrap
-from flask_ckeditor import CKEditor
-from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
+from flask_login import login_user, LoginManager, login_required, current_user, logout_user
 from sqlalchemy.exc import IntegrityError
 
 # Register blueprint
-app = Blueprint('app', __name__, template_folder='templates')
-
-# setup dependencies
-Bootstrap(app)
-
-ckeditor = CKEditor(app)
-
-login_manager = LoginManager()
-login_manager.init_app(app)
+app_view = Blueprint('apps', __name__, template_folder='templates')
 
 
 @login_manager.user_loader
@@ -23,13 +15,13 @@ def load_user(user_id):
     return User.get(user_id)
 
 
-@app.route('/about-me')
+@app_view.route('/about-me')
 def about_me():
     return render_template('about-me.html',
                            logged_in=current_user.is_authenticated)
 
 
-@app.route('/create-project', methods=['GET', 'POST'])
+@app_view.route('/create-project', methods=['GET', 'POST'])
 @login_required
 def create_project():
     project_form = ProjectForm()
@@ -51,13 +43,13 @@ def create_project():
     return render_template('create-project.html', project_form=project_form)
 
 
-@app.route('/')
+@app_view.route('/')
 def home():
     return render_template('index.html',
                            logged_in=current_user.is_authenticated)
 
 
-@app.route('/admin', methods=['GET', 'POST'])
+@app_view.route('/admin', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm()
 
@@ -73,19 +65,19 @@ def login():
     return render_template('login.html', login_form=login_form)
 
 
-@app.route('/logout')
+@app_view.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('home'))
 
 
-@app.route('/cv')
+@app_view.route('/cv')
 def show_cv():
     return render_template('cv.html',
                            logged_in=current_user.is_authenticated)
 
 
-@app.route('/portfolio')
+@app_view.route('/portfolio')
 def show_portfolio():
     portfolio = Project.query.all()
     return render_template('portfolio.html',
@@ -93,7 +85,7 @@ def show_portfolio():
                            logged_in=current_user.is_authenticated)
 
 
-@app.route('/project/<int:project_id>')
+@app_view.route('/project/<int:project_id>')
 def show_project(project_id):
     project = Project.query.get(project_id)
     return render_template('project.html',
@@ -101,6 +93,6 @@ def show_project(project_id):
                            logged_in=current_user.is_authenticated)
 
 
-@app.app_errorhandler(404)
+@app_view.app_errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404

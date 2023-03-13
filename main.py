@@ -1,8 +1,9 @@
-from database import database
+from dependencies import database, login_manager, ckeditor
 from flask import Flask
+from flask_bootstrap import Bootstrap
 
-# app blueprint
-from app.views import app as app_view
+# apps blueprint
+from apps.views import app_view
 
 
 def create_app():
@@ -12,6 +13,9 @@ def create_app():
 
     # setup dependencies
     database.init_app(app)
+    login_manager.init_app(app)
+    ckeditor.init_app(app)
+    Bootstrap(app)
 
     # register blueprint
     app.register_blueprint(app_view)
