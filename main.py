@@ -1,8 +1,5 @@
 from database import database
 from flask import Flask
-from flask_bootstrap import Bootstrap
-from flask_ckeditor import CKEditor
-
 
 # app blueprint
 from app.views import app as app_view
@@ -15,8 +12,6 @@ def create_app():
 
     # setup dependencies
     database.init_app(app)
-    Bootstrap(app)
-    ckeditor = CKEditor(app)
 
     # register blueprint
     app.register_blueprint(app_view)
