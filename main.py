@@ -12,7 +12,7 @@ def create_app():
     app.config.from_object('config.DevelopmentConfig')
 
     # setup dependencies
-    database.init_app(app)
+    db = database.init_app(app)
 
     login_manager.init_app(app)
     ckeditor.init_app(app)
@@ -20,6 +20,9 @@ def create_app():
 
     # register blueprint
     app.register_blueprint(app_view)
+
+    with app.app_context():
+        db.create_all()
 
     return app
 

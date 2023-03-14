@@ -3,41 +3,57 @@
 {% block title %}Caeley Lewis's Porfolio{% endblock %}
 
 {% block main %}
-<div class="container">
-	<h1 class="heading">My Top 10 Movies</h1>
-	<p class="description">These are my all time favourite movies.</p>
-	<div class="container text-center add">
+<div class="col-10 container text-center">
+	<div class="card h-100 p-3 bg-light border rounded-3">
+		<h1 class="heading">My Top 10 Movies</h1>
+		<p class="description">These are my all time favourite movies.</p>
 		<a href="{{ url_for('apps.create_project') }}"><button class="btn btn-outline-secondary" type="button">Add Project</button></a>
-		{% for project in porfolio: %}
-		<div class="col-10 container text-center">
-			<div class="card h-100 p-3 bg-light border rounded-3">
-				<div class="front">
-					<img src={{ project.img_url }} alt="card-background">
-					<div class="card-img-overlay">
+	</div>
+</div>
+
+<div class="card mb-3" style="max-width: 540px;">
+	<div class="row no-gutters">
+		<div class="col-md-4">
+			<img src="..." alt="...">
+		</div>
+		<div class="col-md-8">
+			<div class="card-body">
+				<h5 class="card-title">Card title</h5>
+				<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+				<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% for project in portfolio: %}
+<div class="col-10 container">
+	<div class="col-10 card h-100 p-3 bg-light border rounded-3">
+		<div class="front">
+			<div class="row no-gutters">
+				<div class="card-img-left">
+					<img class="project-photo" src="{{ project.img_url }}" alt="card-background">
+				</div>
+				<div class="col-6">
+					<div class="card-body">
 						<h5 class="card-title">{{ project.title }}</h5>
 						<p class="card-text">{{ project.subtitle }}</p>
 					</div>
 				</div>
-				<div class="back">
-					<div>
-						<div class="title">{{ movie.title }} <span class="release_date">({{ movie.year }})</span></div>
-						<div class="rating">
-							<label>{{ movie.rating }}</label>
-							<i class="fas fa-star star"></i>
-						</div>
-						<p class="review">{{ movie.review }}</p>
-						<p class="overview">
-							{{ movie.description }}
-						</p>
-
-						<a href="{{ url_for('edit', movie_id=movie.id) }}" class="button">Update</a>
-						<a href="{{ url_for('delete', movie_id = movie.id) }}" class="button delete-button">Delete</a>
-
-					</div>
-				</div>
 			</div>
 		</div>
-		{% endfor %}
-	</div>
+		<div class="back">
+			<div>
+				<div class="title">{{ project.title }} <span class="release_date">({{ project.date }})</span></div>
+				<p class="review">{{ project.body }}</p>
+				<a href="{{ url_for('apps.edit_project', project_id=project.id) }}" class="button">Update</a>
+				<a href="{{ url_for('apps.delete_project', project_id=project.id) }}" class="button delete-button">Delete</a>
 
-	{% endblock %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endfor %}
+</div>
+
+{% endblock %}

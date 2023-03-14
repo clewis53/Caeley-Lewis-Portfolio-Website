@@ -1,4 +1,5 @@
 from apps.models import LoginForm, Project, ProjectForm, User
+from datetime import datetime
 from dependencies.database import db
 from dependencies.login_manager import login_manager
 from dependencies.ckeditor import ckeditor
@@ -25,23 +26,6 @@ def about_me():
                            logged_in=authenticated())
 
 
-@app_view.route('/edit-project/<int:project_id>')
-def edit_project(project_id):
-    project = Project.query.get(project_id)
-    project_form = ProjectForm(title=project.title,
-                               subtitle=project.subtitle,
-                               date=project.date,
-                               body=project.body,
-                               img_url=project.img_url)
-
-    if project_form.validate_on_submit():
-        title = project_form.title.data
-        subtitle = project_form.subtitle.data
-        date = project_form.date.data,
-        body = project_form.body.data,
-        img_url = project_form.img_url.data
-
-
 @app_view.route('/create-project', methods=['GET', 'POST'])
 @login_required
 def create_project():
@@ -56,7 +40,7 @@ def create_project():
         try:
             db.session.add(new_project)
             db.session.commit()
-            return redirect(url_for('apps.show_project', project_id=new_project.id))
+            return redirect(url_for('app.show_project', project_id=new_project.id))
 
         except IntegrityError:
             flash('That project title has already been used.')
@@ -64,8 +48,41 @@ def create_project():
     return render_template('create-project.html', project_form=project_form)
 
 
+@app_view.route('/delete/<int:project_id>')
+@login_required
+def delete_project(project_id):
+    project = db.session.query(Project).get(project_id)
+    db.session.delete(project)
+    db.session.commit()
+
+    return redirect(url_for('apps.show_portfolio'))
+
+
+@app_view.route('/edit-project/<int:project_id>')
+def edit_project(project_id):
+    project = db.session.query(Project).get(project_id)
+    project_form = ProjectForm(title=project.title,
+                               subtitle=project.subtitle,
+                               date=datetime.fromisoformat(project.date),
+                               body=project.body,
+                               img_url=project.img_url)
+
+    if project_form.validate_on_submit():
+        title = project_form.title.data
+        subtitle = project_form.subtitle.data
+        date = project_form.date.data,
+        body = project_form.body.data,
+        img_url = project_form.img_url.data
+
+        return redirect(url_for('show_portfolio'))
+
+    return render_template('create-project.html', project_form=project_form)
+
+
 @app_view.route('/')
 def home():
+    res = db.session.query(Project).get(0)
+    print(res)
     return render_template('index.html',
                            logged_in=authenticated())
 
@@ -100,7 +117,7 @@ def show_cv():
 
 @app_view.route('/portfolio')
 def show_portfolio():
-    portfolio = Project.query.all()
+    portfolio = db.session.query(Project).all()
     return render_template('portfolio.html',
                            portfolio=portfolio,
                            logged_in=authenticated())
@@ -108,7 +125,7 @@ def show_portfolio():
 
 @app_view.route('/project/<int:project_id>')
 def show_project(project_id):
-    project = Project.query.get(project_id)
+    project = db.session.query(Project).get(project_id)
     return render_template('project.html',
                            project=project,
                            logged_in=authenticated())

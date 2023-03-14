@@ -69,8 +69,8 @@
 
 	<!-- Content Block -->
 	{% block content %}
-	<div class="bg align-items-center d-flex h-100 w-100">
-
+	
+	<div class="bg">
 		<!--Main Block-->
 		{% block main %}
 		{% with messages = get_flashed_messages() %}
@@ -84,8 +84,8 @@
 		{% endwith %}
 		{% endblock %}
 
-	</div>
 	{% endblock %}
+	</div>
 	
 	<footer id="footer">
 	<!--Footer Block-->
