@@ -10,6 +10,10 @@ from sqlalchemy.exc import IntegrityError
 app_view = Blueprint('apps', __name__, template_folder='templates')
 
 
+def authenticated():
+    return current_user.is_authenticated
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.get(user_id)
@@ -18,7 +22,24 @@ def load_user(user_id):
 @app_view.route('/about-me')
 def about_me():
     return render_template('about-me.html',
-                           logged_in=current_user.is_authenticated)
+                           logged_in=authenticated())
+
+
+@app_view.route('/edit-project/<int:project_id>')
+def edit_project(project_id):
+    project = Project.query.get(project_id)
+    project_form = ProjectForm(title=project.title,
+                               subtitle=project.subtitle,
+                               date=project.date,
+                               body=project.body,
+                               img_url=project.img_url)
+
+    if project_form.validate_on_submit():
+        title = project_form.title.data
+        subtitle = project_form.subtitle.data
+        date = project_form.date.data,
+        body = project_form.body.data,
+        img_url = project_form.img_url.data
 
 
 @app_view.route('/create-project', methods=['GET', 'POST'])
@@ -27,15 +48,15 @@ def create_project():
     project_form = ProjectForm()
 
     if project_form.validate_on_submit():
-        new_project = Project(title=project_form.title,
-                              subtitle=project_form.subtitle,
-                              date=project_form.date,
-                              body=project_form.body,
-                              img_url=project_form.img_url)
+        new_project = Project(title=project_form.title.data,
+                              subtitle=project_form.subtitle.data,
+                              date=project_form.date.data,
+                              body=project_form.body.data,
+                              img_url=project_form.img_url.data)
         try:
             db.session.add(new_project)
             db.session.commit()
-            return redirect(url_for('show_project', project_id=new_project.id))
+            return redirect(url_for('apps.show_project', project_id=new_project.id))
 
         except IntegrityError:
             flash('That project title has already been used.')
@@ -46,7 +67,7 @@ def create_project():
 @app_view.route('/')
 def home():
     return render_template('index.html',
-                           logged_in=current_user.is_authenticated)
+                           logged_in=authenticated())
 
 
 @app_view.route('/admin', methods=['GET', 'POST'])
@@ -56,9 +77,9 @@ def login():
     if login_form.validate_on_submit():
         user = User.get('admin')
 
-        if login_form.password == user.password:
+        if login_form.password.data == user.password:
             login_user(user)
-            return redirect(url_for('home'))
+            return redirect(url_for('apps.home'))
 
         flash('Incorrect Password')
 
@@ -68,13 +89,13 @@ def login():
 @app_view.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('apps.home'))
 
 
 @app_view.route('/cv')
 def show_cv():
     return render_template('cv.html',
-                           logged_in=current_user.is_authenticated)
+                           logged_in=authenticated())
 
 
 @app_view.route('/portfolio')
@@ -82,7 +103,7 @@ def show_portfolio():
     portfolio = Project.query.all()
     return render_template('portfolio.html',
                            portfolio=portfolio,
-                           logged_in=current_user.is_authenticated)
+                           logged_in=authenticated())
 
 
 @app_view.route('/project/<int:project_id>')
@@ -90,9 +111,9 @@ def show_project(project_id):
     project = Project.query.get(project_id)
     return render_template('project.html',
                            project=project,
-                           logged_in=current_user.is_authenticated)
+                           logged_in=authenticated())
 
 
 @app_view.app_errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template('404.html', logged_in=authenticated()), 404

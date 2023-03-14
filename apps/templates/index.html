@@ -1,6 +1,19 @@
 {% extends "layouts/base.html" %}
 
+{% block title %}Caeley Lewis Portfolio{% endblock %}
 
-{% block content %}
-<h1>Hello World</h1>
+{% block main %}
+<div class="col-lg-3 col-md-5 container text-center">
+
+	<div class="card h-100 p-3 bg-light border rounded-3">
+		<img class="card-img-top profile-img" src="{{ url_for('static', filename='img/profile-pic.jpg') }}" alt="profile-pic">
+
+		<div class="card-body">		
+			<h4 class="card-title">I'm Caeley.</h4>			
+			<p class="card-text">I create data solutions in education, health, and physical sciences.</p>
+			<button class="btn btn-outline-secondary" type="button">View my most recent project</button>
+		</div>
+		
+	</div>
+</div>
 {% endblock %}

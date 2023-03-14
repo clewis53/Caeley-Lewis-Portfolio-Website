@@ -13,6 +13,7 @@ def create_app():
 
     # setup dependencies
     database.init_app(app)
+
     login_manager.init_app(app)
     ckeditor.init_app(app)
     Bootstrap(app)
@@ -24,4 +25,5 @@ def create_app():
 
 
 if __name__ == '__main__':
+
     create_app().run()

@@ -1,6 +1,15 @@
 {% extends "layouts/base.html" %}
+{% from 'bootstrap/form.html' import render_form %}
 
+{% block title %}Create New Project{% endblock %}
 
-{% block content %}
-<h1>Hello World</h1>
+{% block main %}
+<div class="col-10 container text-center">
+	<div class="card h-100 p-3 bg-light border rounded-3">
+		<div class="card-body">
+			<h4 class="card-title">Add a Project</h4>
+			<p class="card-text">{{ render_form(project_form) }}</p> 
+		</div>
+	</div>
+</div>
 {% endblock %}
