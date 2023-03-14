@@ -1,9 +1,8 @@
-from apps.models import LoginForm, Project, ProjectForm, User
-from dependencies.database import db
-from dependencies.login_manager import login_manager
-from dependencies.ckeditor import ckeditor
-from flask import Blueprint, redirect, request, url_for, render_template, flash
-from flask_login import login_user, LoginManager, login_required, current_user, logout_user
+from flaskr.models import LoginForm, Project, ProjectForm, User
+from flaskr.database import db
+from flaskr.login_manager import login_manager
+from flask import Blueprint, redirect, url_for, render_template, flash
+from flask_login import login_user, login_required, current_user, logout_user
 from sqlalchemy.exc import IntegrityError
 
 # Register blueprint

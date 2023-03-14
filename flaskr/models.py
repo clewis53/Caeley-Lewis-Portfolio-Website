@@ -1,4 +1,4 @@
-from dependencies.database import db
+from flaskr.database import db
 from flask_ckeditor import CKEditorField
 from flask_login import UserMixin
 from flask_wtf import FlaskForm
