@@ -69,10 +69,10 @@
 
 	<!-- Content Block -->
 	{% block content %}
-	
 	<div class="bg">
 		<!--Main Block-->
 		{% block main %}
+		<!-- Flash Messages -->
 		{% with messages = get_flashed_messages() %}
 		{% if messages %}
 		<div class=flashes>
@@ -83,12 +83,12 @@
 		{% endif %}
 		{% endwith %}
 		{% endblock %}
-
-	{% endblock %}
 	</div>
-	
+	{% endblock %}
+
+	<!--Footer-->
 	<footer id="footer">
-	<!--Footer Block-->
+		<!--Footer Block-->
 		{% block footer %}
 		<a class="footer-link" href="mailto:caeleylewis53@gmail.com"><i class="fa-regular fa-envelope fa-3x footer-fa"></i></a>
 		<a class="footer-link" href="https://www.linkedin.com/in/caeleylewis53/"><i class="fa-brands fa-linkedin fa-3x footer-fa"></i></a>
@@ -97,10 +97,10 @@
 		<p>© Copyright 2023 Caeley Lewis</p>
 		{% endblock %}
 	</footer>
-	
+
 	<!--Scripts Block-->
 	{% block scripts %}
-	<!-- Optional JavaScript -->
+	<!-- Bootstrap JavaScript -->
 	{{ bootstrap.load_js() }}
 	{% endblock %}
 

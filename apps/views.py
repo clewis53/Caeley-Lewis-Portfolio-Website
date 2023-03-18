@@ -3,8 +3,8 @@ from datetime import datetime
 from dependencies.database import db
 from dependencies.login_manager import login_manager
 from dependencies.ckeditor import ckeditor
-from flask import Blueprint, redirect, request, url_for, render_template, flash
-from flask_login import login_user, LoginManager, login_required, current_user, logout_user
+from flask import Blueprint, redirect, url_for, render_template, flash
+from flask_login import login_user, login_required, current_user, logout_user
 from sqlalchemy.exc import IntegrityError
 
 # Register blueprint
@@ -40,7 +40,7 @@ def create_project():
         try:
             db.session.add(new_project)
             db.session.commit()
-            return redirect(url_for('app.show_project', project_id=new_project.id))
+            return redirect(url_for('apps.show_project', project_id=new_project.id))
 
         except IntegrityError:
             flash('That project title has already been used.')
@@ -58,7 +58,7 @@ def delete_project(project_id):
     return redirect(url_for('apps.show_portfolio'))
 
 
-@app_view.route('/edit-project/<int:project_id>')
+@app_view.route('/edit-project/<int:project_id>', methods=['GET', 'POST'])
 def edit_project(project_id):
     project = db.session.query(Project).get(project_id)
     project_form = ProjectForm(title=project.title,
@@ -74,7 +74,7 @@ def edit_project(project_id):
         body = project_form.body.data,
         img_url = project_form.img_url.data
 
-        return redirect(url_for('show_portfolio'))
+        return redirect(url_for('apps.show_portfolio'))
 
     return render_template('create-project.html', project_form=project_form)
 
